@@ -367,6 +367,11 @@ class RepoWatch:
         fullpath = self.projects[project_name]['path']+'/'+output_dir
         project_type = self.projects[project_name]['type']
 
+        try:
+            git_clean = self.projects[project_name]['git_clean']
+        except KeyError:
+            git_clean = False
+
         self.logger.info('Update repo branch: {0}:{1} in {2}'.format(project_name, branch_name, fullpath))
 
         if not os.path.isdir(fullpath):
@@ -385,6 +390,11 @@ class RepoWatch:
 
         self.run_cmd('git checkout -f FETCH_HEAD ',
                      cwd=fullpath)
+
+
+        # removes untracked files
+        if git_clean == True:
+            self.run_cmd('git clean -f -d', cwd=fullpath)
 
         # set perms
         self.run_cmd('find {0} ' \

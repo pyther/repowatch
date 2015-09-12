@@ -33,6 +33,7 @@ projects.yaml:
 - project: test-project
   type: gerrit
   path: /tmp/test-project-2
+  git_clean: true
 - project: testuser/test-project
   type: gitlab
   path: /tmp/test-project
