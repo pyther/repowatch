@@ -42,9 +42,9 @@ GIT_SSH_WRAPPER = '''#!/bin/sh
 
 if [ -z "$PKEY" ]; then
     # if PKEY is not specified, run ssh using default keyfile
-    ssh "$@"
+    ssh -oStrictHostKeyChecking=no "$@"
 else
-    ssh -i "$PKEY" "$@"
+    ssh -oStrictHostKeyChecking=no -i "$PKEY" "$@"
 fi
 '''
 
