@@ -370,10 +370,20 @@ class RepoWatch:
                                                                      project),
                                    ssh_key = self.options[data['type']]['key_filename'])
             if remote:
-                for branch in [h.split('\t')[1][11:] for h in remote.rstrip('\n').split('\n')]:
+                remote_branches = [h.split('\t')[1][11:] for h in remote.rstrip('\n').split('\n')]
+                extra_refs = self.threads[data['type']].get_extra(project)
+                extra_branches = [x[1] for x in extra_refs]
+
+                # delete local branches that have been removed since last startup
+                project_path = self.projects[project]['path']
+                local_branches = [name for name in os.listdir(project_path) if os.path.isdir(os.path.join(project_path, name))]
+                for branch in local_branches:
+                    if not branch in (remote_branches + extra_branches):
+                        self.delete_branch(project, branch)
+                for branch in remote_branches:
                     self.update_branch(project, branch)
                 # check out extra branches like issues or changesets
-                for ref, outdir in self.threads[data['type']].get_extra(project):
+                for ref, outdir in extra_refs:
                     self.update_branch(project, ref, outdir)
             else:
                 self.logger.warn('Did not find remote heads for {0}'.format(project))
