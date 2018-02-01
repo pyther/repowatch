@@ -173,7 +173,7 @@ class RepoWatch(object):
                             wrapper=self.wrapper)
             if known is False:
                 self.logger.error('SSH host key not known! Exiting!')
-                raise Exception  # TODO: need more specific Exception here!
+                sys.exit(1)
 
             remote = run_cmd('git ls-remote --heads '
                              'ssh://{0}@{1}:{2}/{3}.git'.format(self.options[data['type']]['username'],
